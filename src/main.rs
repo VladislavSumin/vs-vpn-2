@@ -6,7 +6,7 @@ fn main() {
     let yaml = match std::fs::read_to_string("config.yaml") {
         Ok(content) => content,
         Err(err) => {
-            eprintln!("не удалось прочитать config.yaml: {err}");
+            eprintln!("failed to read config.yaml: {err}");
             std::process::exit(1);
         }
     };
@@ -18,16 +18,12 @@ fn main() {
             let inner = err.inner();
             if let Some(loc) = inner.location() {
                 eprintln!(
-                    "ошибка в config.yaml (путь: {}, строка {}, колонка {}): {inner}",
-                    err.path(),
+                    "error in config.yaml:{}:{}: {inner}",
                     loc.line(),
                     loc.column(),
                 );
             } else {
-                eprintln!(
-                    "ошибка в config.yaml (путь: {}): {inner}",
-                    err.path(),
-                );
+                eprintln!("error in config.yaml: {inner}");
             }
             std::process::exit(1);
         }

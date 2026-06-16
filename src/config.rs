@@ -12,10 +12,21 @@ pub enum LogLevel {
     Error,
 }
 
+impl From<LogLevel> for tracing::Level {
+    fn from(level: LogLevel) -> Self {
+        match level {
+            LogLevel::Trace => tracing::Level::TRACE,
+            LogLevel::Debug => tracing::Level::DEBUG,
+            LogLevel::Info => tracing::Level::INFO,
+            LogLevel::Warn => tracing::Level::WARN,
+            LogLevel::Error => tracing::Level::ERROR,
+        }
+    }
+}
+
 #[derive(Default, JsonSchema, Deserialize, Debug)]
 pub struct Config {
     #[serde(default)]
-    #[allow(dead_code)]
     pub log_level: LogLevel,
 }
 

@@ -3,6 +3,8 @@ mod config;
 use clap::Parser;
 use config::Config;
 use std::path::PathBuf;
+use tracing::Level;
+use tracing_subscriber::filter;
 
 #[derive(clap::Parser)]
 struct Cli {
@@ -40,5 +42,8 @@ fn main() {
         }
     };
 
-    println!("{config:#?}");
+    let filter = filter::LevelFilter::from_level(Level::from(config.log_level));
+    tracing_subscriber::fmt().with_max_level(filter).init();
+
+    tracing::info!("{config:#?}");
 }

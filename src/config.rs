@@ -15,6 +15,7 @@ pub enum LogLevel {
 #[derive(Default, JsonSchema, Deserialize, Debug)]
 pub struct Config {
     #[serde(default)]
+    #[allow(dead_code)]
     pub log_level: LogLevel,
 }
 

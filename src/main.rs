@@ -1,12 +1,22 @@
 mod config;
 
+use clap::Parser;
 use config::Config;
+use std::path::PathBuf;
+
+#[derive(clap::Parser)]
+struct Cli {
+    #[arg(default_value = "config.yaml")]
+    config: PathBuf,
+}
 
 fn main() {
-    let yaml = match std::fs::read_to_string("config.yaml") {
+    let cli = Cli::parse();
+
+    let yaml = match std::fs::read_to_string(&cli.config) {
         Ok(content) => content,
         Err(err) => {
-            eprintln!("failed to read config.yaml: {err}");
+            eprintln!("failed to read {}: {err}", cli.config.display());
             std::process::exit(1);
         }
     };
@@ -18,12 +28,13 @@ fn main() {
             let inner = err.inner();
             if let Some(loc) = inner.location() {
                 eprintln!(
-                    "error in config.yaml:{}:{}: {inner}",
+                    "error in {}:{}:{}: {inner}",
+                    cli.config.display(),
                     loc.line(),
                     loc.column(),
                 );
             } else {
-                eprintln!("error in config.yaml: {inner}");
+                eprintln!("error in {}: {inner}", cli.config.display());
             }
             std::process::exit(1);
         }
